@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Insert {
 
     public static void main(String[] args) {
-        int[] nums = new int[10];
+        int[] nums = new int[(int) (Math.random() * 100)];
         int[] nums1 = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
             nums[i] = (int) (Math.random() * 100);
