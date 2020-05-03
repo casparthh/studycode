@@ -1,6 +1,6 @@
 package thh.studycode.algorithm;
 
-public class Stack {
+public class MyStack {
 
     static class Node {
         int value;
@@ -14,7 +14,7 @@ public class Stack {
 
     Node tail;
 
-    public void add(Node node) {
+    public void push(Node node) {
         if (tail == null) {
             tail = node;
         } else {
@@ -39,12 +39,17 @@ public class Stack {
         return cur;
     }
 
+    public Node getMin(){
+
+        return tail;
+    }
+
     public static void main(String[] args) {
-        Stack stack = new Stack();
-        stack.add(new Node(1));
-        stack.add(new Node(2));
-        stack.add(new Node(3));
-        stack.add(new Node(4));
+        MyStack stack = new MyStack();
+        stack.push(new Node(1));
+        stack.push(new Node(2));
+        stack.push(new Node(3));
+        stack.push(new Node(4));
 
         Node n =stack.pop();
         while (n != null){
