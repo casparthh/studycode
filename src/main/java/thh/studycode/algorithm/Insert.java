@@ -33,19 +33,14 @@ public class Insert {
      * <p>
      * 类似于抓牌，保证手上的排从左至右有序存放，将新抓到的数字，放到排序中合适位置
      * <p>
-     * 时间复杂度，O(n*n)
+     * 时间复杂度，O(n^2)
      * 空间复杂度，O(1)
      * 稳定性：稳
      */
     public static void insert(int[] nums) {
         for (int i = 1; i < nums.length; i++) {
-            for (int j = i; j > 0; j--) {
-                if (nums[j] < nums[j - 1]) {
-                    swap(nums, j, j - 1);
-                } else {
-                    //如果当前元素大于等于上一个元素了，跳出内循环。
-                    break;
-                }
+            for (int j = i; j > 0 && nums[j] < nums[j - 1]; j--) {
+                swap(nums, j, j - 1);
             }
         }
 
