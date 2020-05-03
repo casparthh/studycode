@@ -1,32 +1,27 @@
 package thh.studycode.algorithm;
 
-import java.util.Arrays;
-
 public class Merge {
 
     public static void main(String[] args) {
-        int[] nums = new int[(int) (Math.random() * 100)];
-        int[] nums1 = new int[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] = (int) (Math.random() * 100);
-            nums1[i] = nums[i];
-            System.out.print(nums[i] + "\t");
-        }
+        for (int t = 0; t < 100000; t++) {
+            int[] nums = new int[(int) (Math.random() * 100)];
+            int[] nums1 = new int[nums.length];
+            for (int i = 0; i < nums.length; i++) {
+                nums[i] = (int) (Math.random() * 100);
+                nums1[i] = nums[i];
+            }
 
-
-        Arrays.sort(nums1);
-        sort(nums, 0, nums.length - 1);
-
-        System.out.println("");
-        for (int i = 0; i < nums.length; i++) {
-            System.out.print(nums[i] + "\t");
-            if (nums[i] != nums1[i]) {
-                System.out.println(false);
-                return;
+//            Arrays.sort(nums1);
+            foreach(nums, 0, nums.length - 1);
+            sort(nums1, 0, nums.length - 1);
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] != nums1[i]) {
+                    System.out.println(false);
+                    return;
+                }
             }
         }
-        System.out.println(true);
-
+        System.out.println("\r\n" + true);
     }
 
     /**
@@ -42,14 +37,40 @@ public class Merge {
      * 稳定性：稳
      */
     public static void sort(int[] nums, int left, int right) {
-        if (left == right) return;
-        int mid = left + (right - left) / 2;
-        //左侧
+        if (nums == null || nums.length <= 1 || left == right) return;
+        int mid = left + ((right - left) >> 1);
         sort(nums, left, mid);
-        //右侧
         sort(nums, mid + 1, right);
+        merge(nums, left, right, mid);
+    }
 
-        merge(nums, left, right, mid + 1);
+    public static void foreach(int[] nums, int left, int right) {
+        if (nums == null || nums.length <= 1 || left == right) return;
+        int step = 1;
+        int size = right - left + 1;
+        while (step < size) {
+            int lPoint = left;
+            while (lPoint <= right) {
+                //只有左边，由于左边肯定是有序的，直接跳过
+                if (right - lPoint + 1 > step) {
+
+                    //当右边不够step数量时，右边界取right值
+                    int rPoint = Math.min(lPoint + (step << 1) - 1, right);
+
+                    //mid 固定为左边界+step-1
+                    int mid = lPoint + step-1;
+
+                    merge(nums, lPoint, rPoint, mid);
+                }
+                lPoint += (step << 1);
+            }
+
+            //先判断，避免在step <<= 1时数字大于int最大值
+            if (step > size >> 1) {
+                return;
+            }
+            step <<= 1;
+        }
     }
 
     /**
@@ -63,22 +84,22 @@ public class Merge {
     public static void merge(int[] nums, int left, int right, int mid) {
         //申请临时空间，存放合并后排序部分的内容。
         int[] temp = new int[right - left + 1];
-        int mPoint = mid;
-
-        int point = 0;
+        int rPoint = mid + 1;
+        int lPoint = left;
+        int index = 0;
         //依次将最小值放入临时空间，并将指针右移
-        while (mPoint > left && right >= mid) {
-            temp[point++] = nums[left] < nums[mid] ? nums[left++] : nums[mid++];
+        while (lPoint <= mid && rPoint <= right) {
+            temp[index++] = nums[lPoint] < nums[rPoint] ? nums[lPoint++] : nums[rPoint++];
         }
-        while (mPoint > left) {
-            temp[point++] = nums[left++];
+        while (lPoint <= mid) {
+            temp[index++] = nums[lPoint++];
         }
-        while (right >= mid) {
-            temp[point++] = nums[mid++];
+        while (rPoint <= right) {
+            temp[index++] = nums[rPoint++];
         }
         //将临时空间中的有序数据再写回数组。
         for (int i = 0; i < temp.length; i++) {
-            nums[right - temp.length + 1 + i] = temp[i];
+            nums[left + i] = temp[i];
         }
     }
 
