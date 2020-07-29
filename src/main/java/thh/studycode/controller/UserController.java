@@ -10,8 +10,11 @@ import java.util.Calendar;
 @RestController
 public class UserController {
 
+    private byte[] bytes = null;
+
     @GetMapping("/user/{id}")
     public User get(@PathVariable int id){
+        bytes = new byte[1024*1024*100];
         User u = new User();
         u.setId(id);
         u.setName("name"+id);

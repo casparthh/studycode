@@ -8,6 +8,7 @@ class StudycodeApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

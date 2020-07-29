@@ -23,7 +23,7 @@ public class TestRunner {
                 lock.lock();
                 log.info(Thread.currentThread().getName()+" 拿到重入锁++++++++++++");
                 try {
-                    TimeUnit.MILLISECONDS.sleep(10);
+                    TimeUnit.MILLISECONDS.sleep(20);
                 } catch (InterruptedException e) {
                     log.error("error occured.", e);
                 }
@@ -42,7 +42,7 @@ public class TestRunner {
                 log.info(Thread.currentThread().getName()+" 再次拿到锁++++++++++++");
                 log.info(Thread.currentThread().getName()+" 干活。。。。。。。");
                 try {
-                    TimeUnit.MILLISECONDS.sleep(10);
+                    TimeUnit.MILLISECONDS.sleep(20);
                 } catch (InterruptedException e) {
                     log.error("error occured.", e);
                 }

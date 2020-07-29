@@ -59,7 +59,7 @@
         <logger name="org.apache.http" level="ERROR"></logger>
         <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="ERROR"></logger>
         <logger name="org.apache.zookeeper" level="ERROR"></logger>
-<!--        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"></logger>-->
+        <!--        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"></logger>-->
         <root level="INFO">
             <appender-ref ref="Console"/>
             <appender-ref ref="RollingFileInfo"/>

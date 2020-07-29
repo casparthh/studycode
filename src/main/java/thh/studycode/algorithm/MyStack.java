@@ -39,11 +39,6 @@ public class MyStack {
         return cur;
     }
 
-    public Node getMin(){
-
-        return tail;
-    }
-
     public static void main(String[] args) {
         MyStack stack = new MyStack();
         stack.push(new Node(1));
