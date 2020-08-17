@@ -30,5 +30,7 @@ public class LockSupportTest1 {
         TimeUnit.MILLISECONDS.sleep(2000);
         LockSupport.unpark(t2);
         LockSupport.unpark(t1);
+//        LockSupport.unpark(t2);
+//        LockSupport.unpark(t1);
     }
 }
