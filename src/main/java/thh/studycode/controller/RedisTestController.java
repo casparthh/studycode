@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +39,8 @@ public class RedisTestController {
     private StringRedisTemplate stringRedisTemplate;
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "key", value = "缓存的 Key 值"),
-            @ApiImplicitParam(name = "value", value = "缓存的 Value 值"),
+            @ApiImplicitParam(name = "key", value = "缓存的 Key 值", defaultValue = "caspar"),
+            @ApiImplicitParam(name = "value", value = "缓存的 Value 值", defaultValue = "casapr"),
     })
     @ApiOperation(value = "set key value", response = ResponseEntity.class, tags = "Swagger")
     @PostMapping("/add/{key}/{value}")
@@ -186,11 +187,14 @@ public class RedisTestController {
         User user = new User();
         user.setName(name);
         user.setAge(age);
+        user.setBirthday(new Date());
         user.setId(id);
 
         User u = stringRedisTemplate.execute(new RedisCallback<User>() {
             @Override
             public User doInRedis(RedisConnection connection) throws DataAccessException {
+                Jackson2HashMapper mapper = new Jackson2HashMapper(true);
+                log.info("serialize: {}", new String(serializerValue(user)));
                 connection.set(serializerKey("user" + id), serializerValue(user));
                 byte[] bytes = connection.get(serializerKey("user" + id));
                 log.info("get user: {}", new String(bytes));
@@ -204,11 +208,11 @@ public class RedisTestController {
         return ((RedisSerializer<String>) stringRedisTemplate.getKeySerializer()).serialize(id);
     }
 
-    public byte[] serializerValue(User user) {
-        return ((RedisSerializer<User>) stringRedisTemplate.getHashValueSerializer()).serialize(user);
+    public byte[] serializerValue(User u) {
+        return ((Jackson2JsonRedisSerializer<User>) stringRedisTemplate.getHashValueSerializer()).serialize(u);
     }
 
     public User deserializer(byte[] bytes) {
-        return (User) stringRedisTemplate.getHashValueSerializer().deserialize(bytes);
+        return (User)((Jackson2JsonRedisSerializer<User>) stringRedisTemplate.getHashValueSerializer()).deserialize(bytes);
     }
 }
