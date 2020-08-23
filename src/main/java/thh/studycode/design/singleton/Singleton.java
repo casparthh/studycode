@@ -4,7 +4,7 @@ public class Singleton {
 
     public final static Singleton INSTANTCE01 = new Singleton();
 
-    private static Singleton INSTANTCE;
+    private static volatile Singleton INSTANTCE;
 
     private Singleton() {
     }

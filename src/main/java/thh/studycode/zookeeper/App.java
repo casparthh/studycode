@@ -18,7 +18,8 @@ public class App {
             /*
                 watch 观察，回调
                 第一类：在new zk 的时候传入的watch，这个是session级别的，跟node，path没有关系，所以在节点变化的时候是收不到回调的。
-                第二类：在节点上添加的watch,
+                第二类：在节点上添加的watch, 是一次性的。
+                watch 的事件只发生在读(get|exists)方法之上的
              */
             ZooKeeper zk = new ZooKeeper(zkCluster, 1000, new Watcher() {
                 @Override
