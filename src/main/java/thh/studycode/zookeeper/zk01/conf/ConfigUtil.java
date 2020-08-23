@@ -146,6 +146,6 @@ public class ConfigUtil implements Watcher, AsyncCallback.StatCallback, AsyncCal
      */
     public void readConfig(String filepath) {
         this.getZooKeeper().exists(filepath, this, this, null);
-        this.getZooKeeper().getData(filepath, this, this, null);
+//        this.getZooKeeper().getData(filepath, this, this, null);
     }
 }
