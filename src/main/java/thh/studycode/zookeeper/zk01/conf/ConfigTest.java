@@ -11,6 +11,7 @@ public class ConfigTest {
 
     public static void main(String[] args) {
         ConfigUtil configUtil = new ConfigUtil();
+        // 通过 AutoCloseable 自动关闭资源
         try (ZooKeeper zooKeeper = configUtil.getZooKeeper()) {
             configUtil.readConfig("/app/conf");
             for (; ; ) {
