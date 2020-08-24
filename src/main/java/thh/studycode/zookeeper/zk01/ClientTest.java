@@ -6,7 +6,6 @@ import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class ClientTest {
@@ -167,23 +166,31 @@ public class ClientTest {
 
     public static void main(String[] args) {
         try {
-            ClientTest.addNode("/caspar", "hello caspar !!!");
-            ClientTest.saveOrUpdateNode("/caspar", "Hello Caspar.");
-            TimeUnit.SECONDS.sleep(5);
-            ClientTest.getNode("/caspar");
-            ClientTest.deleteNode("/caspar");
-            boolean a = ClientTest.deleteNode("/caspar01");
+//            ClientTest.addNode("/caspar", "hello caspar !!!");
+//            ClientTest.saveOrUpdateNode("/caspar", "Hello Caspar.");
+//            TimeUnit.SECONDS.sleep(5);
+//            ClientTest.getNode("/caspar");
+//            ClientTest.deleteNode("/caspar");
+//            boolean a = ClientTest.deleteNode("/caspar01");
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            ClientTest.getZookeeer().addWatch("/aaa", new Watcher() {
+                @Override
+                public void process(WatchedEvent event) {
+                    log.info("------- type: {}, state: {}", event.getType(), event.getState());
+                }
+            }, AddWatchMode.PERSISTENT);
+
+            Stat stat = zooKeeper.exists("/aaa", new Watcher() {
+                @Override
+                public void process(WatchedEvent event) {
+                    log.info("------- type: {}, state: {}", event.getType(), event.getState());
+                }
+            });
+
+            countDownLatch.await();
             System.out.println("done");
         } catch (Exception e) {
             log.error("error occured", e);
-        } finally {
-            try {
-                if (zooKeeper != null) {
-                    zooKeeper.close();
-                }
-            } catch (InterruptedException e) {
-                log.error("close zookeeper error.", e);
-            }
         }
     }
 
