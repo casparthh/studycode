@@ -12,7 +12,7 @@ public class LockTest {
 
     @Test
     public void testLock() {
-        int nums = 1000;
+        int nums = 100;
         CountDownLatch latch = new CountDownLatch(nums);
         ExecutorService es = Executors.newFixedThreadPool(100);
         try {
@@ -20,9 +20,9 @@ public class LockTest {
                 es.submit(() -> {
                     try {
                         LockUtils util = new LockUtils();
-                        boolean locked = util.lock();
+                        boolean locked = util.lock(10);
                         if (locked) {
-                            util.lock();
+                            util.lock(10);
                             String name = Thread.currentThread().getName();
                             log.info(name + " 拿到锁了");
                             log.info(name + " 干活ing...");
@@ -31,7 +31,7 @@ public class LockTest {
                             util.unlock();
                             util.unlock();
                         } else {
-                            log.error("lock error....");
+                            log.error("lock timeout....");
                         }
                     } catch (Exception e) {
                         log.error("error occured,", e);

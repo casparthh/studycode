@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class LockUtils implements Watcher, AsyncCallback.StringCallback, AsyncCallback.ChildrenCallback {
@@ -136,11 +137,12 @@ public class LockUtils implements Watcher, AsyncCallback.StringCallback, AsyncCa
      * 3. 判断当前节点是不是第一个，如果是第一个，获得锁成功
      * 4. 如果不是第一个，监控当前队列中的前一个节点的删除事件
      * 5. 如果前一个节点删除或退出
+     * @param timeout 在指定时间内如果还没排到锁的话，做过期处理。
      * @return
      * @throws InterruptedException
      * @throws KeeperException
      */
-    public boolean lock() throws InterruptedException, KeeperException {
+    public boolean lock(int timeout) throws InterruptedException, KeeperException {
         Integer times = threadLock.get();
         if (times != null) {
             //重入锁， 如果当前线程已经取得锁+1；
@@ -152,9 +154,11 @@ public class LockUtils implements Watcher, AsyncCallback.StringCallback, AsyncCa
         zooKeeper.create("/lock", "lock".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL, this, "lock");
 
         //超时返回。
-        lockLatch.await();
-        threadLock.set(1);
-        return true;
+        boolean locked = lockLatch.await(timeout, TimeUnit.SECONDS);
+        if (locked) {
+            threadLock.set(1);
+        }
+        return locked;
     }
 
     public void unlock() throws InterruptedException, KeeperException {
