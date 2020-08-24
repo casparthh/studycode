@@ -20,9 +20,9 @@ public class LockTest {
                 es.submit(() -> {
                     try {
                         LockUtils util = new LockUtils();
-                        boolean locked = util.lock(10);
+                        boolean locked = util.lock();
                         if (locked) {
-                            util.lock(10);
+                            util.lock();
                             String name = Thread.currentThread().getName();
                             log.info(name + " 拿到锁了");
                             log.info(name + " 干活ing...");
@@ -31,12 +31,9 @@ public class LockTest {
                             util.unlock();
                             util.unlock();
                         } else {
-                            log.error("lock timeout....");
+                            log.error("lock error....");
                         }
-
                     } catch (Exception e) {
-                        log.error("error occured,", e);
-                    } catch (Throwable e) {
                         log.error("error occured,", e);
                     }
                 });
