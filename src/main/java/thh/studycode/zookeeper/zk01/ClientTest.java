@@ -166,29 +166,26 @@ public class ClientTest {
 
     public static void main(String[] args) {
         try {
-//            ClientTest.addNode("/caspar", "hello caspar !!!");
-//            ClientTest.saveOrUpdateNode("/caspar", "Hello Caspar.");
-//            TimeUnit.SECONDS.sleep(5);
-//            ClientTest.getNode("/caspar");
-//            ClientTest.deleteNode("/caspar");
-//            boolean a = ClientTest.deleteNode("/caspar01");
             CountDownLatch countDownLatch = new CountDownLatch(1);
-            ClientTest.getZookeeer().addWatch("/aaa", new Watcher() {
-                @Override
-                public void process(WatchedEvent event) {
-                    log.info("------- type: {}, state: {}", event.getType(), event.getState());
-                }
+            ClientTest.getZookeeer().addWatch("/aaa", (event)->{
+                 log.info("Watcher  Event: {}", event.toString());
             }, AddWatchMode.PERSISTENT);
 
-            Stat stat = zooKeeper.exists("/aaa", new Watcher() {
+
+            Watcher watcher = new Watcher() {
                 @Override
                 public void process(WatchedEvent event) {
-                    log.info("------- type: {}, state: {}", event.getType(), event.getState());
+                    log.info("Watcher  Event: {}", event.toString());
                 }
-            });
+            };
+
+            zooKeeper.addWatch("/aaa", watcher, AddWatchMode.PERSISTENT_RECURSIVE);
+
+            zooKeeper.exists("/aaa", watcher);
 
             countDownLatch.await();
             System.out.println("done");
+
         } catch (Exception e) {
             log.error("error occured", e);
         }

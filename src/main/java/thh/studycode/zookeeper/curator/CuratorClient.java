@@ -85,31 +85,21 @@ public class CuratorClient {
 
         CountDownLatch latch = new CountDownLatch(2);
 
+        Watcher watcher = new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                log.info("Watcher  Event: {}", event.toString());
+            }
+        };
+
+        client.getData().usingWatcher(watcher).forPath(path);
+
         client.getData().usingWatcher(new Watcher() {
             // 使用 Watcher 监听节点
             @Override
             public void process(WatchedEvent event) {
                 log.info("Type: {};  stat: {}", event.getType(), event.getState());
-                switch (event.getType()) {
-                    case None:
-                        break;
-                    case NodeCreated:
-                        break;
-                    case NodeDeleted:
-                        log.info("the node[{}] has been deleted!", event.getPath());
-                        latch.countDown();
-                        break;
-                    case NodeDataChanged:
-                        break;
-                    case NodeChildrenChanged:
-                        break;
-                    case DataWatchRemoved:
-                        break;
-                    case ChildWatchRemoved:
-                        break;
-                    case PersistentWatchRemoved:
-                        break;
-                }
+                log.info("WatchedEvent");
             }
         }).inBackground(new BackgroundCallback() {
             // 使用 inBackground 设置回调方法读取节点信息

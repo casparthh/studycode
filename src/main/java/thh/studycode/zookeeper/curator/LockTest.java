@@ -14,6 +14,10 @@ import java.util.concurrent.TimeUnit;
 public class LockTest {
 
 
+    public void testCurator(){
+
+    }
+
     @Test
     public void testLock() {
         String PATH = "/examples/locks";
