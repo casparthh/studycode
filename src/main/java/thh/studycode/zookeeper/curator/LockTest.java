@@ -1,41 +1,50 @@
-package thh.studycode.zookeeper.zk01.lock;
+package thh.studycode.zookeeper.curator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class LockTest {
 
+
     @Test
     public void testLock() {
-        int nums = 100;
+        String PATH = "/examples/locks";
+        CuratorFramework client = CuratorClient.newClient();
+        client.start();
+
+        int nums = 500;
         CountDownLatch latch = new CountDownLatch(nums);
         ExecutorService es = Executors.newFixedThreadPool(100);
         try {
             for (int i = 0; i < nums; i++) {
                 es.submit(() -> {
+                    InterProcessMutex lock = new InterProcessMutex(client, PATH);
                     try {
-                        LockUtils util = new LockUtils();
-                        boolean locked = util.lock(10);
-                        if (locked) {
-                            //支持重入锁
-                            util.lock(10);
+                        if (lock.acquire(3, TimeUnit.SECONDS)) {
                             String name = Thread.currentThread().getName();
                             log.info(name + " 拿到锁了");
                             log.info(name + " 干活ing...");
                             log.info(name + " 干完活，释放锁");
-                            latch.countDown();
-                            util.unlock();
-                            util.unlock();
                         } else {
                             log.error("lock timeout....");
                         }
                     } catch (Exception e) {
                         log.error("error occured,", e);
+                    } finally {
+                        try {
+                            latch.countDown();
+                            lock.release();
+                        }catch (Exception e){
+                            log.error("error occured,", e);
+                        }
                     }
                 });
             }
