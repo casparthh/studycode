@@ -31,9 +31,14 @@ public class StaticDispatch {
 
     public static void main(String[] args) {
         Human man = new Man();
+        Man man1 = new Man();
         Human woman = new Woman();
+        Woman woman1 = new Woman();
         StaticDispatch dispatch = new StaticDispatch();
         dispatch.sayHello(man);
         dispatch.sayHello(woman);
+
+        dispatch.sayHello(man1);
+        dispatch.sayHello(woman1);
     }
 }
