@@ -1,0 +1,28 @@
+package drools
+import thh.studycode.entity.User
+import java.math.BigDecimal
+import java.util.Date
+import org.apache.commons.lang.time.DateUtils
+import java.util.concurrent.TimeUnit;
+
+rule "rule2"
+    when $user : User(age<60)
+    then $user.setBirthday(DateUtils.parseDate("2012-12-12",new String[]{"yyyy-MM-dd"}));
+    $user.setAge(70);
+    System.out.println("RULE2");
+end
+
+rule "rule1"
+    when $user : User(age<50)
+    then
+    System.out.println($user.getAge());
+    $user.setAge(2);
+    System.out.println("RULE1");
+end
+
+rule "rule3"
+    when $user : User(name == "test")
+        then System.out.println($user.getName());
+        System.out.println($user.getAge());
+        System.out.println("RULE3");
+end

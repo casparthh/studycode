@@ -1,10 +1,6 @@
 package thh.studycode.controller;
 
 import com.google.common.collect.ImmutableMap;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -21,6 +17,7 @@ import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,28 +28,22 @@ import java.util.*;
 
 
 @Slf4j
-@Api(value = "Redis Demo Api", tags = {"Redis"})
 @RestController
 public class RedisTestController {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "key", value = "缓存的 Key 值", defaultValue = "caspar"),
-            @ApiImplicitParam(name = "value", value = "缓存的 Value 值", defaultValue = "casapr"),
-    })
-    @ApiOperation(value = "set key value", response = ResponseEntity.class, tags = "Swagger")
     @PostMapping("/add/{key}/{value}")
     public ResponseEntity add(@PathVariable String key, @PathVariable String value) {
         stringRedisTemplate.opsForValue().set(key, value);
         String sv = stringRedisTemplate.opsForValue().get(key);
 
+
         log.info("string set key: {}, value:{}", key, sv);
         return ResponseEntity.ok(sv);
     }
 
-    @ApiOperation(value = "set key value by bytes", response = ResponseEntity.class)
     @PostMapping("/addbytes/{key}/{value}")
     public ResponseEntity addbytes(@PathVariable String key, @PathVariable String value) {
         RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection();
@@ -64,7 +55,6 @@ public class RedisTestController {
         return ResponseEntity.ok(dv);
     }
 
-    @ApiOperation(value = "hset key field value", response = ResponseEntity.class)
     @PostMapping("/addhash/{key}/{field}/{value}")
     public ResponseEntity addhash(@PathVariable String key, @PathVariable String field, @PathVariable String value) {
         HashOperations hashOperations = stringRedisTemplate.opsForHash();
@@ -77,7 +67,6 @@ public class RedisTestController {
         return ResponseEntity.ok("keys: [" + StringUtils.join(fields, ",") + "]" + "values:[" + StringUtils.join(values, ",") + "]");
     }
 
-    @ApiOperation(value = "hset user01 key value", response = ResponseEntity.class)
     @PostMapping("/adduser/{name}/{age}")
     public ResponseEntity adduser(@PathVariable String name, @PathVariable Integer age) {
         User user = new User();
@@ -97,7 +86,6 @@ public class RedisTestController {
         return ResponseEntity.ok(mapper.toHash(u1).toString());
     }
 
-    @ApiOperation(value = "Publish channel message", response = ResponseEntity.class)
     @PostMapping("/publish/{channel}/{message}")
     public ResponseEntity publish(@PathVariable String channel, @PathVariable String message) {
         stringRedisTemplate.convertAndSend(channel, message);
@@ -105,7 +93,6 @@ public class RedisTestController {
     }
 
 
-    @ApiOperation(value = "Subscribe channel", response = ResponseEntity.class)
     @GetMapping("/subscribe/{channel}")
     public ResponseEntity subscribe(@PathVariable String channel) {
         stringRedisTemplate.getConnectionFactory().getConnection().subscribe(new MessageListener() {
@@ -119,7 +106,6 @@ public class RedisTestController {
         return ResponseEntity.ok("订阅成功");
     }
 
-    @ApiOperation(value = "Compare with pipeline and normal commands", response = ResponseEntity.class)
     @PostMapping("/pipeline")
     public ResponseEntity pipeline() {
         RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection();
@@ -181,7 +167,6 @@ public class RedisTestController {
         return ResponseEntity.ok("");
     }
 
-    @ApiOperation(value = "execute ....", response = ResponseEntity.class)
     @PostMapping("/execute/{id}/{name}/{age}")
     public ResponseEntity execute(@PathVariable int id, @PathVariable String name, @PathVariable Integer age) {
         User user = new User();

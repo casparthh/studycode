@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,7 +92,7 @@ public class RedisOperationService {
             if (key.length == 1) {
                 stringRedisTemplate.delete(key[0]);
             } else {
-                stringRedisTemplate.delete(CollectionUtils.arrayToList(key));
+                stringRedisTemplate.delete(Arrays.asList(key));
             }
         }
     }

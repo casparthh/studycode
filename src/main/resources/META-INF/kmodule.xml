@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+    <!--
+    name:指定kbase的名称，可以任意，但是需要唯一
+    packages:指定规则文件的目录，需要根据实际情况境写，否则无法加载到规则文件
+    default:指定当前kbase是否为默认
+    -->
+    <kbase name="userKbase" packages="drools" default="true">
+        <!--
+        name:指定ksession名称，可以任意，但是需要唯一
+        default:当前session是否为默认
+        -->
+        <ksession name="ksession-rule" default="true"/>
+    </kbase>
+
+<!--        &#45;&#45;add-opens-->
+<!--        java.base/java.util=ALL-UNNAMED-->
+<!--        &#45;&#45;add-opens-->
+<!--        java.base/java.lang.reflect=ALL-UNNAMED-->
+<!--        &#45;&#45;add-opens-->
+<!--        java.base/java.text=ALL-UNNAMED-->
+<!--        &#45;&#45;add-opens-->
+<!--        java.desktop/java.awt.font=ALL-UNNAMED-->
+<!--        &#45;&#45;add-opens-->
+<!--        java.base/java.lang=ALL-UNNAMED-->
+
+</kmodule>
